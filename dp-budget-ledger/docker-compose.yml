@@ -1,0 +1,20 @@
+services:
+  dp-budget-ledger:
+    build: .
+    image: dp-budget-ledger:latest
+    container_name: dp-budget-ledger
+    ports:
+      - "${DP_LEDGER_PORT:-8000}:8000"
+    environment:
+      # 容器内固定路径，通过命名卷持久化
+      DP_LEDGER_DB_PATH: /data/ledger.db
+      # 预算判定浮点容忍度（可选）
+      DP_LEDGER_TOLERANCE: "1e-12"
+      # 写锁冲突重试次数（可选）
+      DP_LEDGER_TX_RETRIES: "50"
+    volumes:
+      - dp-ledger-data:/data
+    restart: unless-stopped
+
+volumes:
+  dp-ledger-data:
